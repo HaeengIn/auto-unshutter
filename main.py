@@ -1,4 +1,7 @@
-import os, sys, time, subprocess
+import os
+import sys
+import time
+import subprocess
 from ppadb.client import Client as AdbClient
 
 COMMAND = "settings put system csc_pref_camera_forced_shuttersound_key 0"
@@ -54,30 +57,24 @@ def main():
 
     print("기기 연결 대기 중...")
 
-    executed_devices = set()
+    timeout = 30  # 최대 30초 대기
+    start_time = time.time()
 
-    while True:
-        try:
-            devices = client.devices()
-            current_serials = set(d.serial for d in devices)
-
-            for device in devices:
-                if device.serial not in executed_devices:
-                    print(f"기기 연결 감지: {device.serial}")
-                    try:
-                        device.shell(COMMAND)
-                        print("명령 실행 완료")
-                        executed_devices.add(device.serial)
-                    except Exception as e:
-                        print("명령 실행 실패:", e)
-
-            executed_devices &= current_serials
-
-        except Exception:
-            # ADB 통신 오류 시 서버 재시작 시도
-            start_adb_server(adb_path)
-
-        time.sleep(2)
+    while time.time() - start_time < timeout:
+        devices = client.devices()
+        if devices:
+            device = devices[0]
+            print(f"기기 연결 감지: {device.serial}")
+            try:
+                device.shell(COMMAND)
+                print("명령 실행 완료")
+            except Exception as e:
+                print("명령 실행 실패:", e)
+            break
+        time.sleep(1)
+    else:
+        print("기기를 찾지 못했습니다.")
 
 if __name__ == "__main__":
     main()
+    input("\n작업이 완료되었습니다. 아무 키나 눌러 종료하세요...")
