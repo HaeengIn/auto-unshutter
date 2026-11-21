@@ -5,33 +5,27 @@ Python Script to Automatically Disable Shutter Sound for Samsung Galaxy
 - `<Android Version> / <One UI Version>`
 - Android 16 / One UI 8.0
 
-## Installation (For General Users)
+## Installation
 Visit [Latest Release Page](https://github.com/HaeengIn/auto-unshutter/releases/latest) and download `.exe` file.
 
-## Installation (For Developers)
-- Bash
-
+## Contribute
+1. Clone repository
     ```bash
-    git clone https://github.com/HaeengIn/auto-noshutter \
-    cd auto-noshutter \
-    pip install -r requirements.txt
+    git clone https://github.com/HaeengIn/auto-unshutter && cd auto-unshutter
+    ```
+2. Install pyinstaller
+    ```bash
+    uv sync
     ```
 
 ## Pyinstaller Command
 ```bash
-pyinstaller --onefile \
---icon=icon.ico \
---version-file=version.txt \
---hidden-import=ppadb.client \
---hidden-import=ppadb.device \
---add-binary "platform-tools/adb.exe:platform-tools" \
---add-binary "platform-tools/AdbWinApi.dll:platform-tools" \
---add-binary "platform-tools/AdbWinUsbApi.dll:platform-tools" \
-main.py
+pyinstaller --onefile --icon=icon.ico --version-file=version.txt --name auto-unshutter --add-data "platform-tools/adb.exe:platform-tools" --add-data "platform-tools/AdbWinApi.dll:platform-tools" --add-data "platform-tools/AdbWinUsbApi.dll:platform-tools" --add-data "licenses:licenses" app.py
 ```
 
 ## How to use
 1. Enable Developer Setting on your phone.
-2. Enable USE Debugging.
+2. Enable USB Debugging.
 3. Connect your PC and phone.
-4. Run the `.exe` file.
+4. Allow USB Debugging.
+5. Run the `.exe` file.
