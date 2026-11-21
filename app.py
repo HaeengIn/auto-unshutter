@@ -19,7 +19,7 @@ def RunAdb(*args: str) -> subprocess.CompletedProcess[str]:
 def WaitAnyKey() -> None:
     import msvcrt
 
-    print("아무 키나 눌러 종료하세요...")
+    print("Press any key to exit...")
     msvcrt.getch()
 
 
@@ -31,7 +31,7 @@ def main() -> None:
             line for line in devices if line.strip().endswith("device")
         ]
         if not connected:
-            print("연결된 기기가 없습니다. USB 디버깅과 케이블을 확인하세요.")
+            print("No device connected. Check USB Debugging and cable.")
             return
         result: subprocess.CompletedProcess[str] = RunAdb(
             "shell",
@@ -41,7 +41,10 @@ def main() -> None:
             "csc_pref_camera_forced_shuttersound_key",
             "0",
         )
-        print(result.stderr.strip() or "카메라 셔터음 강제 설정이 해제되었습니다.")
+        print(
+            result.stderr.strip()
+            or "Successfully disabled forced camera shutter sound."
+        )
     finally:
         RunAdb("kill-server")
         WaitAnyKey()
